@@ -1,60 +1,122 @@
 //
-//  AvoidableScrollView+Add.swift
+//  AvoidableScrollViewKit.swift
 //  MobileBanking
 //
-//  Created by Guilherme Ramos on 28/11/18.
+//  Created by Guilherme Ramos on 11/12/18.
 //  Copyright © 2018 BS2. All rights reserved.
 //
 
 import UIKit
 
-typealias AvoidableScrollViewAdditions = AvoidableScrollView
-extension AvoidableScrollViewAdditions {
-  // MARK: - Notification Handlers
+typealias AvoidableScrollViewBlockType = () -> Void
+typealias AvoidableScrollViewScrollType = (UIScrollView & UITextFieldDelegate & UITextViewDelegate)
+
+final class AvoidableScrollViewKit {
+  weak var scrollView: AvoidableScrollViewScrollType!
+
+  var block: AvoidableScrollViewBlockType?
+
+  init(with scrollView: AvoidableScrollViewScrollType, block: AvoidableScrollViewBlockType? = nil) {
+    self.block = block
+    self.scrollView = scrollView
+  }
+
+  let kCalculatedContentPadding: CGFloat = 10
+  let kMinimumScrollOffsetPadding: CGFloat = 20
+
+  internal var stateKey: String = "UIKeyboardState"
+  internal var kUIKeyboardAnimationDurationUserInfoKey = "UIKeyboardAnimationDurationUserInfoKey"
+
+  var _keyboardState = AvoidableKeyboardState()
+  var keyboardState: AvoidableKeyboardState {
+    get {
+      return _keyboardState
+    }
+    set(newState) {
+      _keyboardState = newState
+    }
+  }
+
+  func register() {
+    NotificationCenter.default
+      .addObserver(self,
+                   selector: #selector(avoidableSvKeyboardWillShow(notification:)),
+                   name: .UIKeyboardWillShow,
+                   object: nil)
+    NotificationCenter.default
+      .addObserver(self,
+                   selector: #selector(avoidableSvKeyboardWillHide(notification:)),
+                   name: .UIKeyboardWillHide,
+                   object: nil)
+    NotificationCenter.default
+      .addObserver(self,
+                   selector: #selector(scrollToActiveTextField),
+                   name: NSNotification.Name.UITextViewTextDidBeginEditing,
+                   object: nil)
+    NotificationCenter.default
+      .addObserver(self,
+                   selector: #selector(scrollToActiveTextField),
+                   name: NSNotification.Name.UITextFieldTextDidBeginEditing,
+                   object: nil)
+  }
+
+  deinit {
+    NotificationCenter.default.removeObserver(self)
+  }
+
+  func cancelPreviousRequest() {
+    NSObject.cancelPreviousPerformRequests(withTarget: self,
+                                           selector: #selector(avoidableSvAssignTextDelegateForViews(beneath:)),
+                                           object: scrollView)
+  }
+
+  @objc func scrollToActiveTextField() {
+    block?()
+  }
+
   @objc func avoidableSvKeyboardWillShow(notification: Notification) {
     if let userInfo = notification.userInfo {
       if let animationDuration = userInfo[kUIKeyboardAnimationDurationUserInfoKey] as? CGFloat {
         keyboardState.animationDuration = animationDuration
       }
-      if let _animationCurve = Int(userInfo[UIResponder.keyboardAnimationCurveUserInfoKey] as? String ?? ""),
-        let animationCurve = UIView.AnimationCurve(rawValue: _animationCurve) {
+      if let _animationCurve = Int(userInfo[UIKeyboardAnimationCurveUserInfoKey] as? String ?? ""), let animationCurve = UIViewAnimationCurve(rawValue: _animationCurve) {
         keyboardState.animationCurve = animationCurve
       }
-      guard let keyboardValue = userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue else { return }
+      guard let keyboardValue = userInfo[UIKeyboardFrameEndUserInfoKey] as? NSValue else { return }
       let keyboardRect = keyboardValue.cgRectValue
       if keyboardState.ignoringNotifications { return }
 
       keyboardState.keyboardRect = keyboardRect
 
       if !keyboardState.keyboardVisible {
-        keyboardState.priorContentInset = contentInset
-        keyboardState.priorScrollIndicatorInsets = scrollIndicatorInsets
-        keyboardState.priorIsPagingEnabled = isPagingEnabled
+        keyboardState.priorContentInset = scrollView.contentInset
+        keyboardState.priorScrollIndicatorInsets = scrollView.scrollIndicatorInsets
+        keyboardState.priorIsPagingEnabled = scrollView.isPagingEnabled
       }
 
       keyboardState.keyboardVisible = true
-      isPagingEnabled = false
+      scrollView.isPagingEnabled = false
 
-      if type(of: self) == AvoidableScrollView.self {
-        keyboardState.priorContentSize = contentSize
-        if contentSize == .zero {
-          contentSize = avoidableSvCalculateContentSizeFromSubviewFrames()
+      if type(of: scrollView) == AvoidableScrollView.self {
+        keyboardState.priorContentSize = scrollView.contentSize
+        if scrollView.contentSize == .zero {
+          scrollView.contentSize = avoidableSvCalculateContentSizeFromSubviewFrames()
         }
       }
-      if let firstResponder = self.avoidableSvFindFirstResponderBeneath(view: self) {
-        contentInset = self.avoidableSvContentInsetForKeyboard()
-        let viewableHeight = self.bounds.height - contentInset.top - contentInset.bottom
+      if let firstResponder = self.avoidableSvFindFirstResponderBeneath(view: scrollView) {
+        scrollView.contentInset = self.avoidableSvContentInsetForKeyboard()
+        let viewableHeight = scrollView.bounds.height - scrollView.contentInset.top - scrollView.contentInset.bottom
         UIView.animate(withDuration: TimeInterval(keyboardState.animationDuration),
                        delay: 0.01,
-                       options: AnimationOptions.curveEaseInOut,
+                       options: .curveEaseInOut,
                        animations: {
-                        let point = CGPoint(x: self.contentOffset.x,
-                                            y: self.avoidableSvOffset(forView: firstResponder,
-                                                                      withHeight: viewableHeight))
                         self.willStartAnimation()
-                        self.setContentOffset(point, animated: false)
-                        self.scrollIndicatorInsets = self.contentInset
-                        self.layoutIfNeeded()
+                        self.scrollView.setContentOffset(CGPoint(self.scrollView.contentOffset.x,
+                                                      self.avoidableSvOffset(forView: firstResponder,
+                                                                             withHeight: viewableHeight)),
+                                              animated: false)
+                        self.scrollView.scrollIndicatorInsets = self.scrollView.contentInset
+                        self.scrollView.layoutIfNeeded()
         }, completion: { (finished) in
           if finished {
             self.didStopAnimation()
@@ -66,8 +128,8 @@ extension AvoidableScrollViewAdditions {
 
   @objc func avoidableSvKeyboardWillHide(notification: Notification) {
     if let userInfo = notification.userInfo {
-      guard let keyboardValue = userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue else { return }
-      let keyboardRect = convert(keyboardValue.cgRectValue, from: nil)
+      guard let keyboardValue = userInfo[UIKeyboardFrameEndUserInfoKey] as? NSValue else { return }
+      let keyboardRect = scrollView.convert(keyboardValue.cgRectValue, from: nil)
       if keyboardRect.isEmpty && !keyboardState.animationInProgress {
         return
       }
@@ -82,14 +144,14 @@ extension AvoidableScrollViewAdditions {
                      delay: 0.01,
                      options: .curveEaseInOut,
                      animations: {
-        if type(of: self) == AvoidableScrollView.self {
-          self.contentSize = self.keyboardState.priorContentSize
-        }
+                      if type(of: self.scrollView) == AvoidableScrollView.self {
+                        self.scrollView.contentSize = self.keyboardState.priorContentSize
+                      }
 
-        self.contentInset = self.keyboardState.priorContentInset
-        self.scrollIndicatorInsets = self.keyboardState.priorScrollIndicatorInsets
-        self.isPagingEnabled = self.keyboardState.priorIsPagingEnabled
-        self.layoutIfNeeded()
+                      self.scrollView.contentInset = self.keyboardState.priorContentInset
+                      self.scrollView.scrollIndicatorInsets = self.keyboardState.priorScrollIndicatorInsets
+                      self.scrollView.isPagingEnabled = self.keyboardState.priorIsPagingEnabled
+                      self.scrollView.layoutIfNeeded()
       })
     }
   }
@@ -105,9 +167,9 @@ extension AvoidableScrollViewAdditions {
   // MARK: - Private avoidableScrollView methods
 
   func avoidableSvFocusNextTextField() -> Bool {
-    if let firstResponder = avoidableSvFindFirstResponderBeneath(view: self) {
-      if let view = avoidableSvFindNextInputViewAfter(view: firstResponder, beneath: self) {
-        DispatchQueue.main.asyncAfter(deadline: .now()) {
+    if let firstResponder = avoidableSvFindFirstResponderBeneath(view: scrollView) {
+      if let view = avoidableSvFindNextInputViewAfter(view: firstResponder, beneath: scrollView) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
           let state = self.keyboardState
           state.ignoringNotifications = true
           view.becomeFirstResponder()
@@ -122,14 +184,14 @@ extension AvoidableScrollViewAdditions {
   func avoidableSvScrollToActiveFirstResponder() {
     let state = keyboardState
     if !state.keyboardVisible { return }
-    if let firstResponder = avoidableSvFindFirstResponderBeneath(view: self) {
+    if let firstResponder = avoidableSvFindFirstResponderBeneath(view: scrollView) {
       state.ignoringNotifications = true
-      let visibleSpace = bounds.height - contentInset.top - contentInset.bottom
-      let idealOffset = CGPoint(x: contentOffset.x,
+      let visibleSpace = scrollView.bounds.height - scrollView.contentInset.top - scrollView.contentInset.bottom
+      let idealOffset = CGPoint(x: scrollView.contentOffset.x,
                                 y: avoidableSvOffset(forView: firstResponder,
                                                      withHeight: visibleSpace))
       UIView.animate(withDuration: TimeInterval(state.animationDuration), animations: {
-        self.contentOffset = idealOffset
+        self.scrollView.contentOffset = idealOffset
       }, completion: { _ in
         state.ignoringNotifications = false
       })
@@ -139,35 +201,35 @@ extension AvoidableScrollViewAdditions {
   func avoidableSvUpdateContentInset() {
     let state = keyboardState
     if state.keyboardVisible {
-      contentInset = avoidableSvContentInsetForKeyboard()
+      scrollView.contentInset = avoidableSvContentInsetForKeyboard()
     }
   }
 
   func avoidableSvUpdateFromContentSizeChange() {
     let state = keyboardState
     if state.keyboardVisible {
-      state.priorContentSize = contentSize
-      contentInset = avoidableSvContentInsetForKeyboard()
+      state.priorContentSize = scrollView.contentSize
+      scrollView.contentInset = avoidableSvContentInsetForKeyboard()
     }
   }
 
   func avoidableSvCalculateContentSizeFromSubviewFrames() -> CGSize {
-    let wasShowingVerticalScrollIndicator = showsVerticalScrollIndicator
-    let wasShowingHorizontalScrollIndicator = showsHorizontalScrollIndicator
+    let wasShowingVerticalScrollIndicator = scrollView.showsVerticalScrollIndicator
+    let wasShowingHorizontalScrollIndicator = scrollView.showsHorizontalScrollIndicator
 
-    showsVerticalScrollIndicator = false
-    showsHorizontalScrollIndicator = false
+    scrollView.showsVerticalScrollIndicator = false
+    scrollView.showsHorizontalScrollIndicator = false
 
     var rect: CGRect = .zero
 
-    for view in subviews {
+    for view in scrollView.subviews {
       rect = rect.union(view.frame)
     }
 
     rect.size.height += kCalculatedContentPadding
 
-    showsVerticalScrollIndicator = wasShowingVerticalScrollIndicator
-    showsHorizontalScrollIndicator = wasShowingHorizontalScrollIndicator
+    scrollView.showsVerticalScrollIndicator = wasShowingVerticalScrollIndicator
+    scrollView.showsHorizontalScrollIndicator = wasShowingHorizontalScrollIndicator
 
     return rect.size
   }
@@ -191,22 +253,22 @@ extension AvoidableScrollViewAdditions {
   }
 
   func avoidableSvFindNextInputViewAfter(view priorView: UIView, beneath view: UIView, bestCandidate candidate: inout UIView?) {
-    let priorFrame = convert(priorView.frame, from: priorView.superview)
+    let priorFrame = scrollView.convert(priorView.frame, from: priorView.superview)
     var candidateFrame: CGRect = .zero
     if let candidate = candidate {
-      candidateFrame = convert(candidate.frame, from: candidate.superview)
+      candidateFrame = scrollView.convert(candidate.frame, from: candidate.superview)
     }
     var candidateHeuristic = avoidableSvNextInputViewHeuristicForView(frame: candidateFrame)
 
     for subview in view.subviews {
       if avoidableSvIsValidKeyCandidate(view: subview) {
-        let frame = convert(subview.frame, from: view)
+        let frame = scrollView.convert(subview.frame, from: view)
         let heuristic = avoidableSvNextInputViewHeuristicForView(frame: frame)
 
         if subview != priorView
-          && ((abs(frame.minY - priorFrame.minY) < CGFloat.ulpOfOne)
+          && ((fabs(frame.minY - priorFrame.minY) < CGFloat.ulpOfOne)
             && frame.minX > priorFrame.minX || frame.minY > priorFrame.minY)
-            && (candidate != nil || heuristic > candidateHeuristic) {
+          && (candidate != nil || heuristic > candidateHeuristic) {
           candidate = subview
           candidateHeuristic = heuristic
         }
@@ -259,23 +321,23 @@ extension AvoidableScrollViewAdditions {
 
   func avoidableSvContentInsetForKeyboard() -> UIEdgeInsets {
     let state = keyboardState
-    var newInset = contentInset
+    var newInset = scrollView.contentInset
     let keyboardRect = state.keyboardRect
-    newInset.bottom = keyboardRect.height - max(keyboardRect.maxY - bounds.maxY, 0)
+    newInset.bottom = keyboardRect.height - max(keyboardRect.maxY - scrollView.bounds.maxY, 0)
     return newInset
   }
 
   func avoidableSvOffset(forView view: UIView, withHeight height: CGFloat) -> CGFloat {
-    let contentSize = self.contentSize
+    let contentSize = scrollView.contentSize
     var offset: CGFloat = 0.0
-    var subviewRect: CGRect = view.convert(view.bounds, to: self)
+    var subviewRect: CGRect = view.convert(view.bounds, to: scrollView)
     var padding: CGFloat = 0.0
     var contentInset: UIEdgeInsets = .zero
 
     if #available(iOS 11.0, *) {
-      contentInset = adjustedContentInset
+      contentInset = scrollView.adjustedContentInset
     } else {
-      contentInset = self.contentInset
+      contentInset = scrollView.contentInset
     }
 
     func centerViewInViewableArea() {
@@ -292,7 +354,7 @@ extension AvoidableScrollViewAdditions {
 
     if let textInput = view as? UITextInput {
       if let position = textInput.selectedTextRange?.start {
-        let positionRect = convert(textInput.caretRect(for: position), from: textInput as? UIView)
+        let positionRect = scrollView.convert(textInput.caretRect(for: position), from: textInput as? UIView)
         padding = (height - positionRect.height) / 2
         if padding < kMinimumScrollOffsetPadding {
           padding = kMinimumScrollOffsetPadding
@@ -318,9 +380,9 @@ extension AvoidableScrollViewAdditions {
 
   func avoidableSvInitialize(view: UIView) {
     guard let textField = view as? UITextField else { return }
-    if textField.returnKeyType == .default || textField.returnKeyType == .next && textField.delegate === self {
-      textField.delegate = self
-      if avoidableSvFindNextInputViewAfter(view: textField, beneath: self) != nil {
+    if textField.returnKeyType == .default || textField.returnKeyType == .next && textField.delegate === scrollView {
+      textField.delegate = scrollView
+      if avoidableSvFindNextInputViewAfter(view: textField, beneath: scrollView) != nil {
         textField.returnKeyType = .next
       } else {
         textField.returnKeyType = .done

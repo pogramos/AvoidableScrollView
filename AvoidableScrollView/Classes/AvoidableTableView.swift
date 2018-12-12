@@ -1,15 +1,15 @@
 //
-//  AvoidableScrollView.swift
+//  AvoidableTableView.swift
 //  MobileBanking
 //
-//  Created by Guilherme Ramos on 28/11/18.
+//  Created by Guilherme Ramos on 11/12/18.
 //  Copyright © 2018 BS2. All rights reserved.
 //
 
 import UIKit
 import ObjectiveC
 
-final class AvoidableScrollView: UIScrollView {
+final class AvoidableTableView: UITableView {
 
   lazy var avoidableScrollViewKit: AvoidableScrollViewKit = self.makeAvoidableScrollViewKit()
   private func makeAvoidableScrollViewKit() -> AvoidableScrollViewKit {
@@ -32,8 +32,8 @@ final class AvoidableScrollView: UIScrollView {
     avoidableScrollViewKit.register()
   }
 
-  override init(frame: CGRect) {
-    super.init(frame: frame)
+  override init(frame: CGRect, style: UITableViewStyle) {
+    super.init(frame: frame, style: style)
     setup()
   }
 
@@ -60,6 +60,7 @@ final class AvoidableScrollView: UIScrollView {
   }
 
   // MARK: - Events
+
   override func willMove(toSuperview newSuperview: UIView?) {
     super.willMove(toSuperview: newSuperview)
     if newSuperview == nil {
@@ -81,7 +82,7 @@ final class AvoidableScrollView: UIScrollView {
   }
 }
 
-extension AvoidableScrollView: UITextFieldDelegate, UITextViewDelegate {
+extension AvoidableTableView: UITextFieldDelegate, UITextViewDelegate {
   func textFieldShouldReturn(_ textField: UITextField) -> Bool {
     if !focusNextTextField() {
       textField.resignFirstResponder()
