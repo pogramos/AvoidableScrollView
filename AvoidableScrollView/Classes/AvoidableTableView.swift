@@ -32,7 +32,7 @@ final class AvoidableTableView: UITableView {
     avoidableScrollViewKit.register()
   }
 
-  override init(frame: CGRect, style: UITableViewStyle) {
+  override init(frame: CGRect, style: UITableView.Style) {
     super.init(frame: frame, style: style)
     setup()
   }

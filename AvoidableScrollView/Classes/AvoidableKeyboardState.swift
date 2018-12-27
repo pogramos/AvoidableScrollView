@@ -18,6 +18,6 @@ class AvoidableKeyboardState {
   var keyboardVisible: Bool = false
   var animationDuration: CGFloat = 0.5
   var animationInProgress: Bool = false
-  var animationCurve: UIViewAnimationCurve = .easeInOut
+  var animationCurve: UIView.AnimationCurve = .easeInOut
   var ignoringNotifications: Bool = false
 }

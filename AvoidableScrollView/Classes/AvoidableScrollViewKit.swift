@@ -41,22 +41,22 @@ final class AvoidableScrollViewKit {
     NotificationCenter.default
       .addObserver(self,
                    selector: #selector(avoidableSvKeyboardWillShow(notification:)),
-                   name: .UIKeyboardWillShow,
+                   name: UIResponder.keyboardWillShowNotification,
                    object: nil)
     NotificationCenter.default
       .addObserver(self,
                    selector: #selector(avoidableSvKeyboardWillHide(notification:)),
-                   name: .UIKeyboardWillHide,
+                   name: UIResponder.keyboardWillHideNotification,
                    object: nil)
     NotificationCenter.default
       .addObserver(self,
                    selector: #selector(scrollToActiveTextField),
-                   name: NSNotification.Name.UITextViewTextDidBeginEditing,
+                   name: UITextView.textDidBeginEditingNotification,
                    object: nil)
     NotificationCenter.default
       .addObserver(self,
                    selector: #selector(scrollToActiveTextField),
-                   name: NSNotification.Name.UITextFieldTextDidBeginEditing,
+                   name: UITextField.textDidBeginEditingNotification,
                    object: nil)
   }
 
@@ -79,10 +79,10 @@ final class AvoidableScrollViewKit {
       if let animationDuration = userInfo[kUIKeyboardAnimationDurationUserInfoKey] as? CGFloat {
         keyboardState.animationDuration = animationDuration
       }
-      if let _animationCurve = Int(userInfo[UIKeyboardAnimationCurveUserInfoKey] as? String ?? ""), let animationCurve = UIViewAnimationCurve(rawValue: _animationCurve) {
+      if let _animationCurve = Int(userInfo[UIResponder.keyboardAnimationCurveUserInfoKey] as? String ?? ""), let animationCurve = UIView.AnimationCurve(rawValue: _animationCurve) {
         keyboardState.animationCurve = animationCurve
       }
-      guard let keyboardValue = userInfo[UIKeyboardFrameEndUserInfoKey] as? NSValue else { return }
+      guard let keyboardValue = userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue else { return }
       let keyboardRect = keyboardValue.cgRectValue
       if keyboardState.ignoringNotifications { return }
 
@@ -111,8 +111,8 @@ final class AvoidableScrollViewKit {
                        options: .curveEaseInOut,
                        animations: {
                         self.willStartAnimation()
-                        self.scrollView.setContentOffset(CGPoint(self.scrollView.contentOffset.x,
-                                                      self.avoidableSvOffset(forView: firstResponder,
+                        self.scrollView.setContentOffset(CGPoint(x: self.scrollView.contentOffset.x,
+                                                                 y: self.avoidableSvOffset(forView: firstResponder,
                                                                              withHeight: viewableHeight)),
                                               animated: false)
                         self.scrollView.scrollIndicatorInsets = self.scrollView.contentInset
@@ -128,7 +128,7 @@ final class AvoidableScrollViewKit {
 
   @objc func avoidableSvKeyboardWillHide(notification: Notification) {
     if let userInfo = notification.userInfo {
-      guard let keyboardValue = userInfo[UIKeyboardFrameEndUserInfoKey] as? NSValue else { return }
+      guard let keyboardValue = userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue else { return }
       let keyboardRect = scrollView.convert(keyboardValue.cgRectValue, from: nil)
       if keyboardRect.isEmpty && !keyboardState.animationInProgress {
         return

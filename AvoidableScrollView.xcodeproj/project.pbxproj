@@ -7,13 +7,14 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5531E45221D5118B0000036C /* AvoidableTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5531E45021D5118B0000036C /* AvoidableTableView.swift */; };
+		5531E45321D5118B0000036C /* AvoidableScrollViewKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5531E45121D5118B0000036C /* AvoidableScrollViewKit.swift */; };
 		5564BE0021B0DB69009F288D /* AvoidableScrollView.h in Headers */ = {isa = PBXBuildFile; fileRef = 5564BDFE21B0DB69009F288D /* AvoidableScrollView.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		5564BE0D21B0DBB5009F288D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5564BE0C21B0DBB5009F288D /* AppDelegate.swift */; };
 		5564BE0F21B0DBB5009F288D /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5564BE0E21B0DBB5009F288D /* ViewController.swift */; };
 		5564BE1221B0DBB5009F288D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5564BE1021B0DBB5009F288D /* Main.storyboard */; };
 		5564BE1421B0DBB7009F288D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5564BE1321B0DBB7009F288D /* Assets.xcassets */; };
 		5564BE1721B0DBB7009F288D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5564BE1521B0DBB7009F288D /* LaunchScreen.storyboard */; };
-		5564BE2021B0DBD7009F288D /* AvoidableScrollView+Add.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5564BE1D21B0DBD6009F288D /* AvoidableScrollView+Add.swift */; };
 		5564BE2121B0DBD7009F288D /* AvoidableScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5564BE1E21B0DBD7009F288D /* AvoidableScrollView.swift */; };
 		5564BE2221B0DBD7009F288D /* AvoidableKeyboardState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5564BE1F21B0DBD7009F288D /* AvoidableKeyboardState.swift */; };
 		5564BE2621B0E2FD009F288D /* AvoidableScrollView.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5564BDFB21B0DB69009F288D /* AvoidableScrollView.framework */; };
@@ -30,6 +31,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		5531E45021D5118B0000036C /* AvoidableTableView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AvoidableTableView.swift; sourceTree = "<group>"; };
+		5531E45121D5118B0000036C /* AvoidableScrollViewKit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AvoidableScrollViewKit.swift; sourceTree = "<group>"; };
 		5564BDFB21B0DB69009F288D /* AvoidableScrollView.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = AvoidableScrollView.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		5564BDFE21B0DB69009F288D /* AvoidableScrollView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AvoidableScrollView.h; sourceTree = "<group>"; };
 		5564BDFF21B0DB69009F288D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -40,7 +43,6 @@
 		5564BE1321B0DBB7009F288D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		5564BE1621B0DBB7009F288D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		5564BE1821B0DBB7009F288D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		5564BE1D21B0DBD6009F288D /* AvoidableScrollView+Add.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AvoidableScrollView+Add.swift"; sourceTree = "<group>"; };
 		5564BE1E21B0DBD7009F288D /* AvoidableScrollView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AvoidableScrollView.swift; sourceTree = "<group>"; };
 		5564BE1F21B0DBD7009F288D /* AvoidableKeyboardState.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AvoidableKeyboardState.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -111,7 +113,8 @@
 			children = (
 				5564BE1F21B0DBD7009F288D /* AvoidableKeyboardState.swift */,
 				5564BE1E21B0DBD7009F288D /* AvoidableScrollView.swift */,
-				5564BE1D21B0DBD6009F288D /* AvoidableScrollView+Add.swift */,
+				5531E45121D5118B0000036C /* AvoidableScrollViewKit.swift */,
+				5531E45021D5118B0000036C /* AvoidableTableView.swift */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -236,8 +239,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5564BE2021B0DBD7009F288D /* AvoidableScrollView+Add.swift in Sources */,
+				5531E45321D5118B0000036C /* AvoidableScrollViewKit.swift in Sources */,
 				5564BE2221B0DBD7009F288D /* AvoidableKeyboardState.swift in Sources */,
+				5531E45221D5118B0000036C /* AvoidableTableView.swift in Sources */,
 				5564BE2121B0DBD7009F288D /* AvoidableScrollView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
