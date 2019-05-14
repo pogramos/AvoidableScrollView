@@ -35,4 +35,4 @@ In order to facilitate this workaround, the contentSize is maintained to be at l
 
 License
 -----
-AvoidableScrollView is available under the MIT license. See the (LICENSE)[https://github.com/pogramos/AvoidableScrollView/blob/pogramos-patch-1/LICENSE] file for more info.
+AvoidableScrollView is available under the MIT license. See the [LICENSE](https://github.com/pogramos/AvoidableScrollView/blob/pogramos-patch-1/LICENSE.md) file for more info.
