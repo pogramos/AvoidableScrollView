@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14460.20"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--View Controller-->
+        <scene sceneID="tne-QT-ifu">
+            <objects>
+                <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="Example" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="BWa-e9-igY" customClass="AvoidableScrollView" customModule="AvoidableScrollView">
+                                <rect key="frame" x="0.0" y="20" width="375" height="647"/>
+                                <subviews>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="5f3-Wr-sa3">
+                                        <rect key="frame" x="0.0" y="0.0" width="375" height="1294"/>
+                                        <subviews>
+                                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="gEh-bC-E9D">
+                                                <rect key="frame" x="20" y="24" width="335" height="60"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="60" id="E23-cV-N6D"/>
+                                                </constraints>
+                                                <nil key="textColor"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                                <textInputTraits key="textInputTraits"/>
+                                            </textField>
+                                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="nFi-dk-opq">
+                                                <rect key="frame" x="20" y="617" width="335" height="60"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="60" id="z0M-cg-K6V"/>
+                                                </constraints>
+                                                <nil key="textColor"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                                <textInputTraits key="textInputTraits"/>
+                                            </textField>
+                                        </subviews>
+                                        <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <constraints>
+                                            <constraint firstItem="nFi-dk-opq" firstAttribute="centerX" secondItem="5f3-Wr-sa3" secondAttribute="centerX" id="OyF-DN-Tf5"/>
+                                            <constraint firstItem="gEh-bC-E9D" firstAttribute="top" secondItem="5f3-Wr-sa3" secondAttribute="top" constant="24" id="Qrt-f5-yhh"/>
+                                            <constraint firstItem="nFi-dk-opq" firstAttribute="top" secondItem="gEh-bC-E9D" secondAttribute="bottom" constant="533" id="VcY-T8-i9I"/>
+                                            <constraint firstAttribute="trailing" secondItem="gEh-bC-E9D" secondAttribute="trailing" constant="20" id="ebJ-gx-jcN"/>
+                                            <constraint firstItem="nFi-dk-opq" firstAttribute="height" secondItem="gEh-bC-E9D" secondAttribute="height" id="foa-z7-XHA"/>
+                                            <constraint firstItem="gEh-bC-E9D" firstAttribute="leading" secondItem="5f3-Wr-sa3" secondAttribute="leading" constant="20" id="icJ-KR-63r"/>
+                                            <constraint firstItem="nFi-dk-opq" firstAttribute="width" secondItem="gEh-bC-E9D" secondAttribute="width" id="yHe-Z2-e1H"/>
+                                        </constraints>
+                                    </view>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstItem="5f3-Wr-sa3" firstAttribute="centerX" secondItem="BWa-e9-igY" secondAttribute="centerX" id="51z-Vd-vog"/>
+                                    <constraint firstAttribute="bottom" secondItem="5f3-Wr-sa3" secondAttribute="bottom" id="83f-Rq-caQ"/>
+                                    <constraint firstAttribute="trailing" secondItem="5f3-Wr-sa3" secondAttribute="trailing" id="Ffm-K1-F0U"/>
+                                    <constraint firstItem="5f3-Wr-sa3" firstAttribute="height" secondItem="BWa-e9-igY" secondAttribute="height" multiplier="2" id="MMS-Gm-Hfa"/>
+                                    <constraint firstItem="5f3-Wr-sa3" firstAttribute="width" secondItem="BWa-e9-igY" secondAttribute="width" id="bda-MF-7Or"/>
+                                    <constraint firstItem="5f3-Wr-sa3" firstAttribute="leading" secondItem="BWa-e9-igY" secondAttribute="leading" id="g6k-fl-Eq0"/>
+                                    <constraint firstItem="5f3-Wr-sa3" firstAttribute="top" secondItem="BWa-e9-igY" secondAttribute="top" id="hgZ-Mc-fbf"/>
+                                </constraints>
+                            </scrollView>
+                        </subviews>
+                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstAttribute="bottom" secondItem="BWa-e9-igY" secondAttribute="bottom" id="BPE-bg-sIl"/>
+                            <constraint firstItem="BWa-e9-igY" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="V5Z-dm-LRM"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="BWa-e9-igY" secondAttribute="trailing" id="lD4-rB-B0y"/>
+                            <constraint firstItem="BWa-e9-igY" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="wyn-t1-Bot"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="61.600000000000001" y="26.53673163418291"/>
+        </scene>
+    </scenes>
+</document>
